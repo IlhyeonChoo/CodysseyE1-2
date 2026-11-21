@@ -116,6 +116,40 @@ class QuizGame:
         else:
             self._dirty = False
 
+    def run(self) -> None:
+        try:
+            if not self._load():
+                return
+            while True:
+                print(
+                    "\n컴퓨터 과학 퀴즈\n1. 퀴즈 풀기\n2. 퀴즈 등록\n3. 퀴즈 목록"
+                    "\n4. 점수 확인\n5. 종료\n6. 무작위 퀴즈 풀기\n7. 퀴즈 삭제"
+                )
+                choice = read_number("메뉴 선택 > ", 7)
+                if choice in (1, 6):
+                    self.play(random_order=(choice == 6))
+                elif choice == 2:
+                    self.add_quiz()
+                elif choice == 3:
+                    self.show_quizzes()
+                elif choice == 4:
+                    self.show_scores()
+                elif choice == 5:
+                    break
+                else:
+                    self.delete_quiz()
+        except (KeyboardInterrupt, EOFError):
+            print("\n입력이 중단되었습니다.")
+        if self._dirty:
+            try:
+                self._save()
+            except KeyboardInterrupt:
+                print("\n게임 데이터 저장이 중단되었습니다.")
+        if self._dirty:
+            print("변경 사항을 저장하지 못한 채 종료합니다.")
+        else:
+            print("퀴즈 게임을 종료합니다.")
+
     def play(self, random_order: bool = False) -> None:
         if not self.quizzes:
             print("등록된 퀴즈가 없습니다.")
