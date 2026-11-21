@@ -57,6 +57,10 @@ uv run --no-project --python 3.11 python -m src.main
     └── test_game.py     게임 진행과 저장 동작 테스트
 ```
 
+## 객체지향을 선택한 이유
+
+한 문항의 정답을 판단할 때는 그 문항의 정보만 필요하므로 `Quiz`가 정답 번호와 판정 메서드를 함께 갖습니다. 한 판을 마칠 때는 이전 최고 점수와 풀이 기록이 함께 바뀔 수 있어 `QuizGame`이 두 값을 관리합니다. 새 상태를 반환하는 함수로도 구현할 수 있지만, 그 경우 메뉴가 반환값을 받아 다음 작업에 전달해야 합니다. 정답 여부와 힌트 사용 여부만으로 결정되는 배점은 독립 함수 `answer_points()`로 두었습니다. [객체와 함수의 역할 비교](docs/architecture.md#객체지향을-선택한-이유)
+
 ## 데이터 파일 `state.json`
 
 실행 디렉터리에 관계없이 저장소 루트의 `state.json`을 UTF-8로 읽고 씁니다.
@@ -87,6 +91,8 @@ uv run --no-project --python 3.11 python -m src.main
 
 파일이 없거나 내용이 손상되면 기본 문항과 빈 점수 기록으로 시작합니다. 직접 모든 문항을 삭제해 저장한 빈 목록은 그대로 유지합니다. 읽기 권한 등의 문제로 파일을 열 수 없으면 원인을 안내하고 종료합니다.
 
+풀이 기록이 쌓이면 시작할 때 읽는 데이터와 메모리 사용량이 함께 늘어납니다. 한 판을 더 마쳤을 때도 이전 기록을 포함한 파일 전체를 다시 씁니다. [기록 100건·1만 건의 측정 결과와 대응 방안](docs/architecture.md#데이터-증가에-따른-json-저장-비용)
+
 ## 미션 제출 자료
 
 제출할 공개 저장소는 [IlhyeonChoo/CodysseyE1-2](https://github.com/IlhyeonChoo/CodysseyE1-2)입니다.
@@ -113,8 +119,7 @@ ssh를 이용해 접속
 
 ### 프로그램 실행 화면
 
-<details>
-<summary>퀴즈 등록과 등록 결과</summary>
+#### 퀴즈 등록과 등록 결과
 
 메뉴 2에서 정규 언어를 인식하는 오토마타에 관한 문제를 입력했습니다. 선택지 네 개와 정답 2번을 확인하고 `예`를 입력하자 등록 완료 메시지가 표시됐습니다.
 
@@ -124,63 +129,43 @@ ssh를 이용해 접속
 
 ![등록한 오토마타 문제가 14번에 표시된 목록](screenshots/add_quiz2.png)
 
-</details>
-
-<details>
-<summary>퀴즈 목록</summary>
+#### 퀴즈 목록
 
 메뉴 3에서 스택 문제부터 오토마타 문제까지 14개 문항의 번호와 제목을 확인할 수 있습니다.
 
 ![메뉴 3에서 조회한 컴퓨터 과학 퀴즈 14문항](screenshots/quiz_list.png)
 
-</details>
-
-<details>
-<summary>퀴즈 풀이와 힌트</summary>
+#### 퀴즈 풀이와 힌트
 
 6번 최대 힙 문제에서 오답을 입력하자 정답 번호와 해설이 표시됐습니다. 이어서 7번 분할 정복 문제에 `힌트`를 입력하자 마스터 정리에 관한 단서와 힌트 사용 시 배점이 나왔습니다.
 
 ![최대 힙 문제의 오답 해설과 분할 정복 문제의 힌트](screenshots/hint_fail.png)
 
-</details>
-
-<details>
-<summary>라운드 결과와 점수 기록</summary>
+#### 라운드 결과와 점수 기록
 
 14문항 중 7문항을 맞혀 35점으로 라운드를 마쳤습니다. 메뉴 4에서 최고 점수 35점과 이전 라운드의 23점 기록을 함께 확인했습니다.
 
 ![14문항 중 7문항 정답으로 얻은 35점과 최근 두 판의 점수 기록](screenshots/history.png)
 
-</details>
-
-<details>
-<summary>퀴즈 삭제</summary>
+#### 퀴즈 삭제
 
 메뉴 7에서 14번 오토마타 문항의 삭제를 확인한 뒤 목록을 다시 열었습니다. 문항 수가 14개에서 13개로 줄었습니다.
 
 ![14번 문항 삭제 확인과 삭제 후 13문항 목록](screenshots/delete_quiz.png)
 
-</details>
-
-<details>
-<summary>한글 선택지 입력 오류 · 수정 전 화면</summary>
+#### 한글 선택지 입력 오류 · 수정 전 화면
 
 첫 번째 선택지를 읽던 중 `UnicodeDecodeError`가 발생해 게임이 종료된 당시 화면입니다. 현재 버전에서는 읽을 수 없는 입력이 들어오면 오류를 안내하고 같은 선택지를 다시 묻습니다.
 
 ![수정 전 첫 번째 선택지를 읽는 도중 발생한 UTF-8 디코딩 오류](screenshots/decoding_error.png)
 
-</details>
-
 ### Git 복제 실습과 이력
 
-<details>
-<summary>GitHub 저장소 복제</summary>
+#### GitHub 저장소 복제
 
 SSH로 저장소를 복제한 뒤 복제본에 들어가 `src/`, `docs/`, `tests/`와 루트의 `state.json`을 확인했습니다.
 
 ![git clone 완료 메시지와 복제된 저장소의 파일 구조](screenshots/clone.png)
-
-</details>
 
 <details>
 <summary>복제본의 변경을 원본에 반영하는 실습 명령</summary>
@@ -216,13 +201,53 @@ SSH로 저장소를 복제한 뒤 복제본에 들어가 `src/`, `docs/`, `tests
 
 </details>
 
-<details>
-<summary>커밋 그래프와 기능 브랜치 병합</summary>
+#### 커밋 그래프와 기능 브랜치 병합
 
 `git log --oneline --graph`에서 퀴즈 기능 브랜치 `feature/quiz-game`이 `main`에 병합된 커밋 `c56066c`를 확인할 수 있습니다.
 
 ![퀴즈 기능 브랜치가 main에 합쳐지는 커밋 그래프](screenshots/git_log.png)
 
-</details>
+```Zsh
+> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        docs/mission.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+> git log --oneline --graph
+* 889d88b (HEAD -> main, origin/main, origin/HEAD) docs: 깃 로그와 개발환경 추가
+* 3392b74 깃로그 스크린샷 추가
+* a8f6e08 docs: README.md에 추가할 스크린샷
+* 5ed6284 fix: 퀴즈 추가시에 한글 인코딩 문제 수정
+* 79b9c2d test:quiz 삭제
+* aa7081c feat: 퀴즈 추가
+*   c56066c Merge quiz game implementation into main
+|\
+| * fde3234 (feature/quiz-game) docs: explain how to run the game and interpret saved scores
+| * 9844609 docs: clarify mission requirements and Korean input commands
+| * 9aaaffe chore: translate ignore rule comments into Korean
+| * 849d23f test: cover quiz sessions, recovery, and save retries
+| * 528260f feat: connect the console menu and handle interrupted sessions
+| * 6e99fc8 feat: register and delete questions with confirmation
+| * 2f5fb16 feat: play ordered and random rounds with hints and score history
+| * 43b3a9a feat: validate and atomically save quiz state
+| * 8ddb6c1 feat: score rounds and track personal bests
+| * 4f7627e feat: add multiple-choice quizzes and five starter questions
+|/
+* 303537e docs: 구조와 개발 순서 등 AI의 조언에 맞춰 수정
+* debb338 state.json 미션 요구에 맞춰 루트로 이동
+* 9a23651 markdown 에러 해결
+* 686bcb8 docs로 문서 옮기면서 남겨진 기록
+* a53d98c README 작성 시작 구현하면서 천천히 업데이트 예정
+* 48d57aa 기본 소스 파일들 생성
+* 05f009c 문서들 디렉토리로 이동 및 architecture 작성 시작
+* 94571b6 전체 프로그램 플로우와 개발 순서 정리
+* cb103de Docs: Mission Request
+* 5ec1c41 Initial commit
+
+```
 
 [스크린샷 전체 보기](screenshots/)
