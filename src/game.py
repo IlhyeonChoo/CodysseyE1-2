@@ -26,6 +26,24 @@ def read_number(prompt: str, maximum: int) -> int:
             return number
 
 
+def read_text(prompt: str) -> str:
+    while True:
+        text = input(prompt).strip()
+        if text:
+            return text
+        print("내용을 입력하세요.")
+
+
+def confirm(prompt: str) -> bool:
+    while True:
+        answer = input(f"{prompt} (예/아니요) > ").strip().lower()
+        if answer in ("예", "yes"):
+            return True
+        if answer in ("아니요", "no"):
+            return False
+        print("예 또는 아니요를 입력하세요.")
+
+
 def read_answer(quiz: Quiz) -> tuple[int, bool]:
     used_hint = False
     while True:
@@ -140,6 +158,21 @@ class QuizGame:
         if new_best:
             print("새로운 최고 점수입니다!")
 
+    def add_quiz(self) -> None:
+        question = read_text("등록할 문제 > ")
+        choices = [read_text(f"선택지 {i} > ") for i in range(1, 5)]
+        answer = read_number("정답 번호 (1~4) > ", 4)
+        quiz = Quiz(question, choices, answer, created_at=date.today().isoformat())
+        print("\n[등록할 퀴즈]")
+        quiz.display()
+        print(f"정답: {answer}번")
+        if confirm("이 퀴즈를 등록할까요?"):
+            self.quizzes.append(quiz)
+            self._save()
+            print("퀴즈를 등록했습니다.")
+        else:
+            print("등록을 취소했습니다.")
+
     def show_quizzes(self) -> None:
         if not self.quizzes:
             print("등록된 퀴즈가 없습니다.")
@@ -147,6 +180,18 @@ class QuizGame:
         print(f"\n퀴즈 목록 ({len(self.quizzes)}문제)")
         for index, quiz in enumerate(self.quizzes, start=1):
             print(f"[{index}] {quiz.question}")
+
+    def delete_quiz(self) -> None:
+        self.show_quizzes()
+        if not self.quizzes:
+            return
+        index = read_number("삭제할 퀴즈 번호 > ", len(self.quizzes)) - 1
+        if confirm(f"‘{self.quizzes[index].question}’ 문항을 삭제할까요?"):
+            self.quizzes.pop(index)
+            self._save()
+            print("퀴즈를 삭제했습니다.")
+        else:
+            print("삭제를 취소했습니다.")
 
     def show_scores(self) -> None:
         if self.best_score is None:
