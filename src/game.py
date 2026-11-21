@@ -7,6 +7,20 @@ from .quiz import Quiz, default_quizzes
 from .record import RoundRecord, answer_points
 
 
+def read_input(prompt: str) -> str:
+    """해석할 수 없는 문자가 들어오면 같은 항목을 다시 묻는다."""
+    while True:
+        try:
+            text = input(prompt)
+        except UnicodeDecodeError:
+            pass
+        else:
+            # 해석하지 못한 입력 바이트는 서로게이트 문자로 전달될 수도 있다.
+            if not any("\ud800" <= char <= "\udfff" for char in text):
+                return text.strip()
+        print("입력한 문자를 읽을 수 없습니다. 같은 항목을 다시 입력해 주세요.")
+
+
 def parse_number(text: str, maximum: int) -> int | None:
     """입력값이 허용 범위 안의 숫자면 반환하고, 그렇지 않으면 범위를 안내한다."""
     try:
@@ -21,14 +35,14 @@ def parse_number(text: str, maximum: int) -> int | None:
 
 def read_number(prompt: str, maximum: int) -> int:
     while True:
-        number = parse_number(input(prompt), maximum)
+        number = parse_number(read_input(prompt), maximum)
         if number is not None:
             return number
 
 
 def read_text(prompt: str) -> str:
     while True:
-        text = input(prompt).strip()
+        text = read_input(prompt)
         if text:
             return text
         print("내용을 입력하세요.")
@@ -36,7 +50,7 @@ def read_text(prompt: str) -> str:
 
 def confirm(prompt: str) -> bool:
     while True:
-        answer = input(f"{prompt} (예/아니요) > ").strip().lower()
+        answer = read_input(f"{prompt} (예/아니요) > ").lower()
         if answer in ("예", "yes"):
             return True
         if answer in ("아니요", "no"):
@@ -47,7 +61,7 @@ def confirm(prompt: str) -> bool:
 def read_answer(quiz: Quiz) -> tuple[int, bool]:
     used_hint = False
     while True:
-        text = input("정답 번호(1~4) 또는 ‘힌트’를 입력하세요 > ").strip()
+        text = read_input("정답 번호(1~4) 또는 ‘힌트’를 입력하세요 > ")
         if text.lower() in ("힌트", "h"):
             if not used_hint:
                 hint = quiz.hint

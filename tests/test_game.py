@@ -1,6 +1,7 @@
 import errno
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -28,6 +29,43 @@ class GameTests(unittest.TestCase):
         with patch("sys.stdin", io.StringIO(inputs)), redirect_stdout(output):
             QuizGame(self.store).run()
         return output.getvalue()
+
+    def test_registration_retries_choice_after_decode_error(self):
+        error = UnicodeDecodeError("utf-8", b"\xe3!", 0, 1, "invalid continuation byte")
+        replies = ["2", "문제", "하나", error, "둘", "셋", "넷", "2", "예", "5"]
+        with (
+            patch("builtins.input", side_effect=replies) as read,
+            redirect_stdout(io.StringIO()) as output,
+        ):
+            QuizGame(self.store).run()
+        prompts = [call.args[0] for call in read.call_args_list]
+        self.assertEqual(prompts.count("선택지 1 > "), 1)
+        self.assertEqual(prompts.count("선택지 2 > "), 2)
+        self.assertIn("다시 입력", output.getvalue())
+        self.assertEqual(self.store.load()[0][-1].choices, ["하나", "둘", "셋", "넷"])
+
+    def test_cli_rejects_only_the_malformed_line_in_piped_input(self):
+        source = Path(__file__).resolve().parents[1] / "src"
+        shutil.copytree(
+            source, self.root / "src", ignore=shutil.ignore_patterns("__pycache__")
+        )
+        inputs = (
+            "2\n문제\n하나\n".encode()
+            + b"broken \xe3!\n"
+            + "둘\n셋\n넷\n2\n예\n5\n".encode()
+        )
+        result = subprocess.run(
+            [sys.executable, "-m", "src.main"], cwd=self.root, input=inputs,
+            env={**os.environ, "PYTHONIOENCODING": "utf-8:strict"},
+            capture_output=True, timeout=5,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertIn("다시 입력", result.stdout.decode())
+        quiz = self.store.load()[0][-1]
+        self.assertEqual(
+            (quiz.question, quiz.choices, quiz.answer),
+            ("문제", ["하나", "둘", "셋", "넷"], 2),
+        )
 
     def test_cli_saves_in_project_root_and_loads_registration_after_restart(self):
         source = Path(__file__).resolve().parents[1] / "src"
