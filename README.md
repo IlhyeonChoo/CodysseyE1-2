@@ -45,6 +45,7 @@ uv run --no-project --python 3.11 python -m src.main
 ├── README.md
 ├── state.json           퀴즈, 최고 점수, 풀이 기록
 ├── docs/                미션 요구사항, 프로그램 설계와 흐름
+├── screenshots/         게임 실행과 Git 실습 화면
 ├── src/
 │   ├── __init__.py
 │   ├── main.py          게임을 시작하는 진입점
@@ -90,100 +91,138 @@ uv run --no-project --python 3.11 python -m src.main
 
 제출할 공개 저장소는 [IlhyeonChoo/CodysseyE1-2](https://github.com/IlhyeonChoo/CodysseyE1-2)입니다.
 
-### 개발 환경과 실행 화면
+### 개발 환경
 
-아래 파일명으로 PNG를 `docs/screenshots/`에 저장하면 각 항목을 펼쳐 화면을 볼 수 있습니다.
+#### 개인 서버
+
+OS : Ubuntu 24.04.5 LTS
+Shell : Zsh
+Terminal : WezTerm
+Docker : 29.5.3
+Docker Compose : 5.1.4
+Git : 2.43.0
+GitHub : 2.93.0
+Other : <https://github.com/IlhyeonChoo/dotfiles.git>
+        <https://github.com/IlhyeonChoo/nvim.git>
+
+Mac 또는 Windows 에서 WezTerm 을 터미널로 사용
+ssh를 이용해 접속
+포트 포워딩 없이 Tailscale의 Tunneling을 이용
+
+미션 제출용 개발 환경 캡처는 `screenshots/environment.png`에 추가할 예정입니다. 편집기와 Python 버전, Git 설정이 보이는 화면을 사용합니다.
+
+### 프로그램 실행 화면
 
 <details>
-<summary>개발 환경 · environment.png</summary>
+<summary>퀴즈 등록과 등록 결과</summary>
 
-프로젝트를 연 편집기와 터미널에서 실행한 `python3 --version`, `git --version`, `git config --get user.name` 결과를 함께 담습니다.
+메뉴 2에서 정규 언어를 인식하는 오토마타에 관한 문제를 입력했습니다. 선택지 네 개와 정답 2번을 확인하고 `예`를 입력하자 등록 완료 메시지가 표시됐습니다.
 
-![편집기와 파이썬 버전, Git 설정](docs/screenshots/environment.png)
+![오토마타 문제의 선택지 입력, 정답 미리보기와 등록 완료 메시지](screenshots/add_quiz1.png)
+
+메뉴 3을 열면 방금 등록한 문제가 목록의 14번에 보입니다.
+
+![등록한 오토마타 문제가 14번에 표시된 목록](screenshots/add_quiz2.png)
 
 </details>
 
 <details>
-<summary>퀴즈 등록 · add_quiz.png</summary>
+<summary>퀴즈 목록</summary>
 
-메뉴 2에서 문제, 선택지 4개, 정답 번호를 입력합니다. 미리보기와 `예` 입력 후 등록 완료 메시지가 한 화면에 보이도록 캡처합니다.
+메뉴 3에서 스택 문제부터 오토마타 문제까지 14개 문항의 번호와 제목을 확인할 수 있습니다.
 
-![새 퀴즈의 입력 내용과 등록 완료 메시지](docs/screenshots/add_quiz.png)
-
-</details>
-
-<details>
-<summary>퀴즈 목록 · list.png</summary>
-
-메뉴 3에서 방금 등록한 문제의 번호와 제목을 확인합니다.
-
-![추가한 문항이 포함된 퀴즈 목록](docs/screenshots/list.png)
+![메뉴 3에서 조회한 컴퓨터 과학 퀴즈 14문항](screenshots/quiz_list.png)
 
 </details>
 
 <details>
-<summary>퀴즈 풀이 · play.png</summary>
+<summary>퀴즈 풀이와 힌트</summary>
 
-메뉴 6에서 한 문항을 선택해 끝까지 풉니다. 문제와 선택지, 입력한 답의 채점 결과, 한 판의 총점을 담습니다. 메뉴 1에서 전체 문항을 풀어도 됩니다.
+6번 최대 힙 문제에서 오답을 입력하자 정답 번호와 해설이 표시됐습니다. 이어서 7번 분할 정복 문제에 `힌트`를 입력하자 마스터 정리에 관한 단서와 힌트 사용 시 배점이 나왔습니다.
 
-![문항과 선택지, 채점 결과와 총점](docs/screenshots/play.png)
+![최대 힙 문제의 오답 해설과 분할 정복 문제의 힌트](screenshots/hint_fail.png)
 
 </details>
 
 <details>
-<summary>재실행 후 점수 확인 · score.png</summary>
+<summary>라운드 결과와 점수 기록</summary>
 
-메뉴 5로 종료한 뒤 다시 실행합니다. 메뉴 4에서 최고 점수와 방금 끝낸 판의 기록을 확인합니다. 메뉴 3에서는 추가한 문항도 다시 볼 수 있습니다.
+14문항 중 7문항을 맞혀 35점으로 라운드를 마쳤습니다. 메뉴 4에서 최고 점수 35점과 이전 라운드의 23점 기록을 함께 확인했습니다.
 
-![재실행 후 표시되는 최고 점수와 풀이 기록](docs/screenshots/score.png)
+![14문항 중 7문항 정답으로 얻은 35점과 최근 두 판의 점수 기록](screenshots/history.png)
+
+</details>
+
+<details>
+<summary>퀴즈 삭제</summary>
+
+메뉴 7에서 14번 오토마타 문항의 삭제를 확인한 뒤 목록을 다시 열었습니다. 문항 수가 14개에서 13개로 줄었습니다.
+
+![14번 문항 삭제 확인과 삭제 후 13문항 목록](screenshots/delete_quiz.png)
+
+</details>
+
+<details>
+<summary>한글 선택지 입력 오류 · 수정 전 화면</summary>
+
+첫 번째 선택지를 읽던 중 `UnicodeDecodeError`가 발생해 게임이 종료된 당시 화면입니다. 현재 버전에서는 읽을 수 없는 입력이 들어오면 오류를 안내하고 같은 선택지를 다시 묻습니다.
+
+![수정 전 첫 번째 선택지를 읽는 도중 발생한 UTF-8 디코딩 오류](screenshots/decoding_error.png)
 
 </details>
 
 ### Git 복제 실습과 이력
+
+<details>
+<summary>GitHub 저장소 복제</summary>
+
+SSH로 저장소를 복제한 뒤 복제본에 들어가 `src/`, `docs/`, `tests/`와 루트의 `state.json`을 확인했습니다.
+
+![git clone 완료 메시지와 복제된 저장소의 파일 구조](screenshots/clone.png)
+
+</details>
+
+<details>
+<summary>복제본의 변경을 원본에 반영하는 실습 명령</summary>
 
 1. 원본 저장소의 `main`에 완성본을 푸시한 뒤, 원본 루트에서 아래 명령으로 별도의 실습 디렉터리를 만듭니다.
 
    ```bash
    git clone git@github.com:IlhyeonChoo/CodysseyE1-2.git ../CodysseyE1-2-practice
    cd ../CodysseyE1-2-practice
-   mkdir -p docs/screenshots
    python3 src/main.py
    ```
 
-2. **복제본**에서 위의 다섯 화면을 캡처해 지정된 파일명으로 저장합니다. 캡처 파일을 커밋해 푸시하고, `git log -1 --oneline`에 나오는 커밋 번호를 확인합니다.
+2. **복제본**에서 추가한 화면을 `screenshots/`에 저장합니다. 캡처 파일을 커밋해 푸시하고, `git log -1 --oneline`에 나오는 커밋 번호를 확인합니다.
 
    ```bash
-   git add -- docs/screenshots/
+   git add -- screenshots/
    git commit -m "docs: add environment and quiz screenshots"
    git push origin main
    git log -1 --oneline
    ```
 
-3. **원본**으로 돌아와 변경을 받습니다. 복제본에서 본 커밋 번호와 원본의 커밋 번호가 같고, 사진 다섯 장이 들어왔는지 확인합니다.
+3. **원본**으로 돌아와 변경을 받습니다. 복제본에서 본 커밋 번호와 원본의 커밋 번호가 같고, 추가한 사진이 들어왔는지 확인합니다.
 
    ```bash
    cd ../CodysseyE1-2
    git pull --ff-only origin main
    git log -1 --oneline
-   ls docs/screenshots/
+   ls screenshots/
    git log --oneline --graph
    ```
 
-<details>
-<summary>브랜치 병합과 커밋 그래프 · git-graph.png</summary>
-
-마지막 명령의 출력에서 퀴즈 기능 브랜치가 `main`에 합쳐지는 지점과 기능별 커밋이 보이도록 캡처합니다.
-
-![기능 브랜치 병합과 커밋 이력](docs/screenshots/git-graph.png)
+실습 로그도 첨부하려면 복제본의 푸시 결과, 원본의 풀 결과, 양쪽의 커밋 번호를 `docs/clone-pull.txt`에 저장합니다.
 
 </details>
 
-복제 실습 로그도 첨부하려면 복제본의 푸시 결과, 원본의 풀 결과, 양쪽의 커밋 번호를 `docs/clone-pull.txt`에 저장합니다. [실습 자료 폴더](docs/)
+<details>
+<summary>커밋 그래프와 기능 브랜치 병합</summary>
 
-4. **원본**에서 그래프 캡처를 커밋하고 푸시합니다. 선택 로그를 작성했다면 커밋 전에 `git add -- docs/clone-pull.txt`도 실행합니다.
+`git log --oneline --graph`에서 퀴즈 기능 브랜치 `feature/quiz-game`이 `main`에 병합된 커밋 `c56066c`를 확인할 수 있습니다.
 
-   ```bash
-   git add -- docs/screenshots/git-graph.png
-   git commit -m "docs: add submission evidence for Git history"
-   git push origin main
-   ```
+![퀴즈 기능 브랜치가 main에 합쳐지는 커밋 그래프](screenshots/git_log.png)
+
+</details>
+
+[스크린샷 전체 보기](screenshots/)
